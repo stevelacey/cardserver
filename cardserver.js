@@ -28,7 +28,7 @@ var service = server.listen(port, function (request, response) {
     if (path == base) {
         url = 'https://' + host + '/card';
     } else {
-        url = 'https://' + host + '/' + path + '/card?currency=USD';
+        url = 'https://' + host + '/' + path + '/card';
     }
 
     tmp = dir + '/' + path + '.png';
