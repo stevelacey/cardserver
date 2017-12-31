@@ -10,19 +10,12 @@ Cardserver is largely based on [how Pieter generates shareable pictures](https:/
 | **[![Nomad Cruise VI: Spain To Greece](https://cards.coworkations.co/nomad-cruise/nomad-cruise-vi-spain-to-greece.png)](https://cards.coworkations.co/nomad-cruise/nomad-cruise-vi-spain-to-greece.png) [📄 HTML](https://coworkations.co/nomad-cruise/nomad-cruise-vi-spain-to-greece/card) [🏙 PNG](https://cards.coworkations.co/nomad-cruise/nomad-cruise-vi-spain-to-greece.png)** | **[![PACK: Ubud Bali](https://cards.coworkations.co/pack/ubud-bali-2.png)](https://cards.coworkations.co/pack/ubud-bali-2.png) [📄 HTML](https://coworkations.co/pack/ubud-bali-2/card) [🏝 PNG](https://cards.coworkations.co/pack/ubud-bali-2.png)** |
 
 
-Prerequisites
--------------
-
-- PhantomJS
-
-
 Setup
 -----
 
 ```sh
-npm install -g phantomjs
-git clone https://github.com/stevelacey/cardserver.git
-phantomjs cardserver/cardserver.js
+npm install -g cardserver
+cardserver
 ```
 
 
