@@ -1,6 +1,6 @@
 {
   "name": "cardserver",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple social media card renderer written in PhantomJS – screenshot card-like webpages on-the-fly",
   "main": "cardserver.js",
   "repository": "github:stevelacey/cardserver",

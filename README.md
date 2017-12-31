@@ -94,7 +94,7 @@ Supervisor is handy to keep cardserver running:
 
 ```
 [program:cardserver]
-command = phantomjs /path/to/cardserver/cardserver.js
+command = cardserver
 autostart = true
 autorestart = true
 stdout_logfile = /var/log/supervisor/cardserver.log
