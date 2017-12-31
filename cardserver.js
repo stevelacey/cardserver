@@ -21,7 +21,7 @@ var service = server.listen(port, function (request, response) {
         return;
     }
 
-    host = request.headers['Host'].replace('cards.', '');
+    host = request.headers['Host'].replace('cards.', '').replace(/:.*/, '');
     base = host.substr(0, host.indexOf('.'));
     path = request.url.replace(regex, '$1');
 
