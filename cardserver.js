@@ -7,7 +7,7 @@ var fs = require('fs'),
     width = 1024,
     height = 512,
     maxage = 60 * 60 * 24 * 7,
-    regex = /^\/([\w/-]+)\.png(?:\?.*)?$/;
+    regex = /^(?:\/cards)?\/([\w/-]+)\.png(?:\?.*)?$/;
 
 if (!fs.exists(dir)) fs.makeDirectory(dir);
 
