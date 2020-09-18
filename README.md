@@ -22,18 +22,14 @@ cardserver
 Usage
 -----
 
-A cardserver request maps to a webserver request like so:
+Cardserver performs HTML requests based on PNG requests like so:
 
 | 🌇 PNG (cardserver request) | 📄 HTML (webserver request) |
-| :-------------------------------------------------- | :--------------------------------------------- |
-| https://steve.ly/cards/steve.png                    | https://steve.ly/card                          |
-| https://coworkations.com/cards/coworkations.png     | https://coworkations.com/card                  |
-| https://coworkations.com/cards/hacker-paradise.png  | https://coworkations.com/hacker-paradise/card  |
-| https://coworkations.com/cards/pack/ubud-bali-2.png | https://coworkations.com/pack/ubud-bali-2/card |
-
-In short, the `/cards` prefix is dropped and the `.png` is swapped for `/card`
-
-**Note:** homepage cards are available at `hostname(without tld).png`
+| :-------------------------------------------------- | :---------------------------------------------- |
+| https://steve.ly/cards/steve.png                    | https://steve.ly/cards/steve                    |
+| https://coworkations.com/cards/coworkations.png     | https://coworkations.com/cards/coworkations     |
+| https://coworkations.com/cards/hacker-paradise.png  | https://coworkations.com/cards/hacker-paradise  |
+| https://coworkations.com/cards/pack/ubud-bali-2.png | https://coworkations.com/cards/pack/ubud-bali-2 |
 
 
 Markup
@@ -72,30 +68,12 @@ PhantomJS can be a jerk about fonts, especially Google Fonts, you may need to do
 NGINX
 -----
 
-The simplest way to hook cardserver up is to map `/cards` to it via NGINX:
+The simplest way to hook cardserver up is to route all PNG traffic to it via NGINX:
 
 ```
-location /cards {
+location ~ ^/cards/.*\.png$ {
     proxy_pass http://127.0.0.1:9100;
 }
-```
-
-
-Haproxy
--------
-
-Alternatively, cardserver can work with a subdomain, and you could serve it with haproxy like so:
-
-```
-frontend:
-    default_backend app
-
-    acl host_cards hdr_beg(host) -i cards.
-    use_backend cards if host_cards
-
-backend cards
-    option forwardfor
-    server cards 127.0.0.1:9100
 ```
 
 

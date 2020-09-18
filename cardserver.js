@@ -12,7 +12,7 @@ var fs = require('fs'),
 if (!fs.exists(dir)) fs.makeDirectory(dir);
 
 var service = server.listen(port, function (request, response) {
-    var base, host, path, tmp, url;
+    var host, path, tmp, url;
 
     if (!request.url.match(regex)) {
         response.statusCode = 404;
@@ -22,14 +22,9 @@ var service = server.listen(port, function (request, response) {
     }
 
     host = request.headers['Host'].replace('cards.', '').replace(/:.*/, '');
-    base = host.substr(0, host.indexOf('.'));
-    path = request.url.replace(regex, '$1');
+    path = request.url.replace('.png', '');
 
-    if (path == base) {
-        url = 'https://' + host + '/card';
-    } else {
-        url = 'https://' + host + '/' + path + '/card';
-    }
+    url = 'https://' + host + path;
 
     tmp = dir + '/' + path + '.png';
 
