@@ -4,8 +4,8 @@ var fs = require('fs'),
     system = require('system'),
     dir = '/tmp/cards',
     port = system.env.PORT || 9100,
-    width = 1024,
-    height = 512,
+    width = 1200,
+    height = 630,
     maxage = 60 * 60 * 24 * 7,
     regex = /^(?:\/cards)?\/([\w/-]+)\.png(?:\?.*)?$/;
 
