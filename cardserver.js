@@ -26,7 +26,7 @@ var service = server.listen(port, function (request, response) {
 
     url = 'https://' + host + path;
 
-    tmp = dir + '/' + path + '.png';
+    tmp = dir + '/' + host + '/' + path + '.png';
 
     console.log(url);
 
