@@ -8,7 +8,7 @@ const port = process.env.PORT || 9100
 const width = 1200
 const height = 630
 const maxage = 60 * 60 * 24 * 7
-const storage = '/tmp/cards';
+const storage = '/tmp/cards'
 
 const card = async (req, res) => {
     const host = req.hostname.replace('cards.', '')
