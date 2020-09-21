@@ -32,6 +32,7 @@ const card = async (req, res) => {
         const page = await browser.newPage()
         await page.setViewport({ width: 1200, height: 630 })
         const result = await page.goto(url)
+        await page.evaluateHandle('document.fonts.ready')
         const status = result.status()
 
         res.status(status)
