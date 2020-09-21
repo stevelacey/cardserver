@@ -8,13 +8,12 @@ const port = process.env.PORT || 9100
 const width = 1200
 const height = 630
 const maxage = 60 * 60 * 24 * 7
-const storage = '/tmp/cards'
 
 const card = async (req, res) => {
     const host = req.hostname.replace('cards.', '')
     const url = `${req.protocol}://${host}/${req.params[0]}`
 
-    const imagePath = `${storage}/${host}/${req.params[0]}.png`
+    const imagePath = `/tmp/cards/${host}/${req.params[0].replace('cards/', '')}.png`
     const imageExpired = !fs.existsSync(imagePath) || Date.parse(fs.statSync(imagePath).mtime) < new Date - maxage * 1000
 
     console.log(url)
