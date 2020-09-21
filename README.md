@@ -47,7 +47,7 @@ You’ll want meta tags something like these:
 Caching
 -------
 
-Cardserver serves basic caching headers and works great with Cloudflare
+Cardserver serves basic caching headers and works great with Cloudflare, generated images are cached in `/tmp/cards` and replaced after 1 week, empty the directory if you want to clear the cache
 
 The script serves a cache maxage of a week, and requires `.png` file extension so that Cloudflare will cache it without any additional configuration (page rules are required otherwise)
 
