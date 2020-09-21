@@ -1,7 +1,7 @@
 Cardserver
 ==========
 
-A simple social media card renderer written in PhantomJS – screenshot card-like webpages on-the-fly
+A simple social media card renderer written using Puppeteer – screenshot card-like webpages on-the-fly
 
 Cardserver is largely based on [how Pieter generates shareable pictures](https://levels.io/phantomjs-social-media-share-pictures) for [Nomad List](https://nomadlist.com) – built for [Coworkations](https://coworkations.com)
 
@@ -62,7 +62,7 @@ Debugging
 Fonts
 -----
 
-PhantomJS can be a jerk about fonts, especially Google Fonts, you may need to download TTF’s and dump them somewhere like `/usr/share/fonts/truetype` (Ubuntu), you can get the URL to Google’s TTF’s by blanking out your `User-Agent` (otherwise it’ll probably serve you WOFF2’s)
+If you have any issues with fonts you may need to download them and put them somewhere like `/usr/share/fonts/truetype` (Ubuntu), you can get the URL to Google’s TTF’s by blanking out your `User-Agent` (otherwise it’ll probably serve you WOFF2’s)
 
 
 NGINX
@@ -73,6 +73,8 @@ The simplest way to hook cardserver up is to route all PNG traffic to it via NGI
 ```
 location ~ ^/cards/.*\.png$ {
     proxy_pass http://127.0.0.1:9100;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
