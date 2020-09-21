@@ -28,7 +28,7 @@ const card = async (req, res) => {
             fs.mkdirSync(path.dirname(imagePath), { recursive: true })
         }
 
-        const browser = await puppeteer.launch({ args: [ `--window-size=${width},${height}` ] })
+        const browser = await puppeteer.launch({ args: [ '--no-sandbox', `--window-size=${width},${height}` ] })
         const page = await browser.newPage()
         await page.setViewport({ width: 1200, height: 630 })
         const result = await page.goto(url)
