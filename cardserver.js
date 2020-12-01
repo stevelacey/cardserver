@@ -9,62 +9,73 @@ const width = 1200
 const height = 630
 const maxage = 60 * 60 * 24 * 7
 
-let chain = Promise.resolve()
+;(async () => {
+    const app = express()
 
-const card = async (page, req, res) => {
-    const host = req.hostname.replace('cards.', '')
-    const url = `${req.protocol}://${host}/${req.params[0]}`
+    const browser = await puppeteer.launch({
+        args: [
+            '--disable-accelerated-2d-canvas',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--disable-setuid-sandbox',
+            '--no-first-run',
+            '--no-sandbox',
+            '--no-zygote',
+            '--single-process',
+        ],
+        headless: true,
+    })
 
-    chain = chain.then(async () => {
+    app.enable('trust proxy')
+
+    app.get(/^\/(.*)\.png$/, async (req, res) => {
+        const host = req.hostname.replace('cards.', '')
+        const url = `${req.protocol}://${host}/${req.params[0]}`
+
         const imagePath = `/tmp/cards/${host}/${req.params[0].replace('cards/', '')}.png`
         const imageExpired = !fs.existsSync(imagePath) || Date.parse(fs.statSync(imagePath).mtime) < new Date - maxage * 1000
 
         console.log(url + '.png')
 
-        if (!imageExpired) {
-            return serve(fs.readFileSync(imagePath), res)
-        }
+        let image, status
 
-        if (!fs.existsSync(path.dirname(imagePath))) {
-            fs.mkdirSync(path.dirname(imagePath), { recursive: true })
-        }
-
-        try {
-            const result = await page.goto(url)
-
-            await page.evaluateHandle('document.fonts.ready')
-
-            if (!result.ok()) {
-                res.status(result.status())
-                return res.send()
+        if (imageExpired) {
+            if (!fs.existsSync(path.dirname(imagePath))) {
+                fs.mkdirSync(path.dirname(imagePath), { recursive: true })
             }
 
-            const screenshot = await page.screenshot({ path: imagePath })
+            const page = await browser.newPage()
 
-            serve(screenshot, res)
-        } catch (err) {
-            res.status(502)
-            return res.send()
+            await page.setViewport({ width, height })
+
+            try {
+                const result = await page.goto(url)
+
+                await page.evaluateHandle('document.fonts.ready')
+
+                status = result.status()
+                image = result.ok() ? await page.screenshot({ path: imagePath }) : null
+            } catch (err) {
+                status = 502
+                image = null
+            }
+
+            page.close()
+        } else {
+            status = 200
+            image = fs.readFileSync(imagePath)
         }
+
+        res.status(status)
+
+        if (image) {
+            res.header('Cache-Control', 'public, max-age=' + maxage)
+            res.header('Content-Type', 'image/png')
+            res.header('Expires', new Date(Date.now() + maxage * 1000).toUTCString())
+        }
+
+        return res.send(image)
     })
-}
-
-const serve = (image, res) => {
-    res.header('Cache-Control', 'public, max-age=' + maxage)
-    res.header('Content-Type', 'image/png')
-    res.header('Expires', new Date(Date.now() + maxage * 1000).toUTCString())
-    res.send(image)
-}
-
-(async () => {
-    const app = express()
-    const browser = await puppeteer.launch({ args: [ '--no-sandbox', `--window-size=${width},${height}` ] })
-    const page = await browser.newPage()
-
-    await page.setViewport({ width: 1200, height: 630 })
-
-    app.enable('trust proxy')
-    app.get(/^\/(.*)\.png$/, (req, res) => card(page, req, res))
 
     if (app.listen(port)) {
         console.log('Card server started on port ' + port)
