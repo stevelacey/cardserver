@@ -37,13 +37,9 @@ const maxage = 60 * 60 * 24 * 7
 
         console.log(url + '.png')
 
-        let image, status
+        let image
 
         if (imageExpired) {
-            if (!fs.existsSync(path.dirname(imagePath))) {
-                fs.mkdirSync(path.dirname(imagePath), { recursive: true })
-            }
-
             const page = await browser.newPage()
 
             await page.setViewport({ width, height })
@@ -53,20 +49,20 @@ const maxage = 60 * 60 * 24 * 7
 
                 await page.evaluateHandle('document.fonts.ready')
 
-                status = result.status()
-                image = result.ok() ? await page.screenshot({ path: imagePath }) : null
+                if (result.ok()) {
+                    fs.mkdirSync(path.dirname(imagePath), { recursive: true })
+                    image = await page.screenshot({ path: imagePath })
+                }
+
+                res.status(result.status())
             } catch (err) {
-                status = 502
-                image = null
+                res.status(502)
             }
 
             page.close()
         } else {
-            status = 200
             image = fs.readFileSync(imagePath)
         }
-
-        res.status(status)
 
         if (image) {
             res.header('Cache-Control', 'public, max-age=' + maxage)
