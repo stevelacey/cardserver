@@ -29,19 +29,23 @@ const card = async (page, req, res) => {
             fs.mkdirSync(path.dirname(imagePath), { recursive: true })
         }
 
-        const result = await page.goto(url)
-        await page.evaluateHandle('document.fonts.ready')
-        const status = result.status()
+        try {
+            const result = await page.goto(url)
 
-        res.status(status)
+            await page.evaluateHandle('document.fonts.ready')
 
-        if (!result.ok()) {
+            if (!result.ok()) {
+                res.status(result.status())
+                return res.send()
+            }
+
+            const screenshot = await page.screenshot({ path: imagePath })
+
+            serve(screenshot, res)
+        } catch (err) {
+            res.status(502)
             return res.send()
         }
-
-        const screenshot = await page.screenshot({ path: imagePath })
-
-        serve(screenshot, res)
     })
 }
 
